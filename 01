@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nagoya 2025 | Trip Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom Vibe Styles */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --accent-blue: #2563eb;
+            --accent-red: #ef4444;
+            --accent-green: #10b981;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f3f4f6;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            background-attachment: fixed;
+            color: #1f2937;
+            overflow-x: hidden;
+        }
+
+        .font-display {
+            font-family: 'Zen Maru Gothic', sans-serif;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Timeline Connector */
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #e5e7eb 0%, #9ca3af 50%, #e5e7eb 100%);
+            z-index: 0;
+        }
+
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+        
+        .flight-path {
+            stroke-dasharray: 10;
+            animation: dash 30s linear infinite;
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -1000;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+
+    <header class="relative text-white pt-20 pb-32 px-6 overflow-hidden">
+        <div class="absolute inset-0 z-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1542051841857-5f90071e7989?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"></div>
+        
+        <div class="max-w-4xl mx-auto relative z-10 text-center">
+            <div class="inline-block px-4 py-1 rounded-full border border-white/30 bg-white/10 backdrop-blur-md text-sm mb-4 animate-pulse">
+                2025.12.17 - 12.23
+            </div>
+            <h1 class="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tight drop-shadow-lg">
+                NAGOYA <span class="text-blue-200">WINTER</span>
+            </h1>
+            <p class="text-xl text-gray-200 mb-10 font-light">
+                熱田神宮 · 合掌村 · 吉卜力 · 銀魂展
+            </p>
+
+            <div class="glass-card bg-white/10 text-left p-6 rounded-2xl max-w-2xl mx-auto border-white/20">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="plane-takeoff" class="w-5 h-5 text-blue-300"></i>
+                        <span class="font-mono text-sm opacity-80">MM722</span>
+                    </div>
+                    <div class="text-xs border border-white/30 px-2 py-0.5 rounded">TPE <i data-lucide="arrow-right" class="inline w-3 h-3"></i> NGO</div>
+                </div>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <div class="text-3xl font-bold font-display">02:55</div>
+                        <div class="text-sm opacity-70">台北 (TPE) T1</div>
+                    </div>
+                    <div class="h-px bg-white/30 flex-1 mx-4 mb-3 relative">
+                        <div class="absolute -top-1.5 right-0 w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-bold font-display">06:25</div>
+                        <div class="text-sm opacity-70">名古屋 (NGO) T1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 -mt-20 relative z-20">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 reveal">
+            <div class="glass-card rounded-2xl p-6 bg-white/90">
+                <h3 class="flex items-center gap-2 font-bold text-lg mb-4 text-gray-800">
+                    <i data-lucide="check-square" class="text-green-500"></i>
+                    行前準備
+                </h3>
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-3 group cursor-pointer" onclick="this.classList.toggle('opacity-40')">
+                        <div class="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center group-hover:border-blue-500 transition-colors">
+                            <div class="w-3 h-3 bg-blue-500 rounded-sm opacity-0 group-hover:opacity-20"></div>
+                        </div>
+                        <span>機票 / 網卡 / 保險</span>
+                    </li>
+                    <li class="flex items-center gap-3 group cursor-pointer" onclick="this.classList.toggle('opacity-40')">
+                        <div class="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center group-hover:border-blue-500 transition-colors">
+                            <div class="w-3 h-3 bg-blue-500 rounded-sm opacity-0 group-hover:opacity-20"></div>
+                        </div>
+                        <span>入境資料 (VJW)</span>
+                    </li>
+                    <li class="flex items-center gap-3 group cursor-pointer" onclick="this.classList.toggle('opacity-40')">
+                        <div class="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center group-hover:border-blue-500 transition-colors">
+                            <div class="w-3 h-3 bg-blue-500 rounded-sm opacity-0 group-hover:opacity-20"></div>
+                        </div>
+                        <span>飯店確認 (千代倉)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 bg-white/90">
+                <h3 class="flex items-center gap-2 font-bold text-lg mb-4 text-gray-800">
+                    <i data-lucide="ticket" class="text-amber-500"></i>
+                    票券狀態
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center text-sm p-2 bg-gray-50 rounded-lg border border-gray-100">
+                        <span>吉卜力大散步 Premium</span>
+                        <span class="text-green-600 font-bold flex items-center gap-1"><i data-lucide="check-circle-2" class="w-4 h-4"></i> 已購</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm p-2 bg-gray-50 rounded-lg border border-gray-100">
+                        <span>合掌村一日遊</span>
+                        <span class="text-green-600 font-bold flex items-center gap-1"><i data-lucide="check-circle-2" class="w-4 h-4"></i> 已購</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm p-2 bg-gray-50 rounded-lg border border-gray-100">
+                        <span>銀魂展門票</span>
+                        <span class="text-green-600 font-bold flex items-center gap-1"><i data-lucide="check-circle-2" class="w-4 h-4"></i> 已購</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="itinerary-container" class="space-y-16">
+            </div>
+
+    </main>
+
+    <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+        <nav class="bg-gray-900/80 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-2xl flex gap-6 text-sm overflow-x-auto max-w-[90vw]">
+            <a href="#day-1" class="hover:text-blue-300 whitespace-nowrap">D1 抵達</a>
+            <a href="#day-2" class="hover:text-blue-300 whitespace-nowrap">D2 市區</a>
+            <a href="#day-3" class="hover:text-blue-300 whitespace-nowrap">D3 合掌村</a>
+            <a href="#day-4" class="hover:text-blue-300 whitespace-nowrap">D4 神社</a>
+            <a href="#day-5" class="hover:text-blue-300 whitespace-nowrap">D5 吉卜力</a>
+            <a href="#day-6" class="hover:text-blue-300 whitespace-nowrap">D6 動物園</a>
+            <a href="#day-7" class="hover:text-blue-300 whitespace-nowrap">D7 回家</a>
+        </nav>
+    </div>
+
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        // Data from CSV
+        const itineraryData = [
+            {
+                id: "day-1",
+                date: "12/17 (三)",
+                title: "抵達 & 熱田神宮",
+                summary: "機場 ➔ 飯店 ➔ 熱田神宮 ➔ 名古屋車站逛街",
+                events: [
+                    { time: "06:25", title: "抵達中部國際機場", type: "transport", note: "預留入境時間" },
+                    { time: "06:40", title: "移動至市區", type: "transport", note: "名鐵特急40分鐘" },
+                    { time: "07:40", title: "千代倉 Hotel 寄放行李", type: "hotel", note: "放完行李輕鬆出發" },
+                    { time: "08:00", title: "熱田神宮", type: "sight", location: "熱田神宮", note: "必去：草薙館、寶物館。記得看攻略！" },
+                    { time: "午餐", title: "市區午餐", type: "food", note: "隨意探索" },
+                    { time: "PM", title: "名古屋車站大爆買", type: "shopping", items: ["香源 (香氛)", "UNIQLO (客製T恤)", "Animate", "無印良品"], note: "香源營業至 18:17" }
+                ]
+            },
+            {
+                id: "day-2",
+                date: "12/18 (四)",
+                title: "科學與銀魂",
+                summary: "科學館 ➔ 銀魂展 ➔ 綠洲21 ➔ 大須商店街",
+                events: [
+                    { time: "09:30", title: "貨幣浮世繪博物館", type: "sight", note: "免費入場" },
+                    { time: "10:00", title: "名古屋市科學館", type: "sight", note: "門票800円，全球最大天文館" },
+                    { time: "14:50", title: "銀魂展 @ 松坂屋", type: "event", note: "熱血時間！需要買海報筒可去附近美術社", highlight: true },
+                    { time: "傍晚", title: "綠洲 21 & PARCO", type: "sight", note: "水的宇宙飛船拍照、哈利波特商店、蘋果糖專賣店" },
+                    { time: "晚上", title: "大須商店街", type: "shopping", note: "かんざし屋wargo(髮簪)、古著店、青柳総本家" }
+                ]
+            },
+            {
+                id: "day-3",
+                date: "12/19 (五)",
+                title: "合掌村一日遊",
+                summary: "飛驒高山 ➔ 白川鄉合掌村 ➔ 咖啡廳落人",
+                isSpecial: true,
+                events: [
+                    { time: "08:15", title: "集合 @ Ministop 名駅椿町店", type: "transport", note: "Klook 巴士團，準時集合！" },
+                    { time: "11:00", title: "飛驒高山 (小京都)", type: "sight", note: "必吃：飛驒牛握壽司 (飛騨こって牛)、高山拉麵" },
+                    { time: "14:30", title: "白川鄉合掌村", type: "sight", note: "童話世界！登上城山展望台俯瞰全景" },
+                    { time: "15:30", title: "喫茶 落人", type: "food", note: "ONE PIECE 粉絲必去，紅豆粥無限續" },
+                    { time: "20:00", title: "返回名古屋", type: "transport", note: "晚餐時間" }
+                ]
+            },
+            {
+                id: "day-4",
+                date: "12/20 (六)",
+                title: "古城與神社巡禮",
+                summary: "伊奴神社 ➔ 名古屋城 ➔ 若宮八幡社",
+                events: [
+                    { time: "10:00", title: "伊奴神社", type: "sight", note: "狗狗御守很可愛" },
+                    { time: "11:00", title: "名古屋城", type: "sight", note: "門票500円" },
+                    { time: "13:00", title: "午餐：鰻魚飯", type: "food", note: "Hitsumabushi Bincho (金鯱橫丁)" },
+                    { time: "PM", title: "三輪神社 & 若宮八幡社", type: "sight", note: "兔子神社 (三輪)" },
+                    { time: "傍晚", title: "自由逛街 / 大須回放", type: "shopping", note: "補買沒買到的東西" }
+                ]
+            },
+            {
+                id: "day-5",
+                date: "12/21 (日)",
+                title: "吉卜力公園",
+                summary: "全日吉卜力沈浸體驗",
+                isSpecial: true,
+                events: [
+                    { time: "08:30", title: "前往吉卜力公園", type: "transport", note: "名鐵巴士中心4樓24號月台 (票價1200円)" },
+                    { time: "10:00", title: "吉卜力公園", type: "event", note: "大散步券 Premium！記得攜帶電子票券 URL", highlight: true, image: "https://images.unsplash.com/photo-1596397249168-5e9215da3345?auto=format&fit=crop&q=80&w=800" },
+                    { time: "17:00", title: "返回市區", type: "transport", note: "帶著滿滿的回憶與戰利品" }
+                ]
+            },
+            {
+                id: "day-6",
+                date: "12/22 (一)",
+                title: "帥哥猩猩與夜景",
+                summary: "東山動植物園 ➔ Sky Tower",
+                events: [
+                    { time: "10:00", title: "東山動植物園", type: "sight", note: "尋找傳說中的帥哥猩猩 (Shabani) 🦍" },
+                    { time: "PM", title: "Sky Tower", type: "sight", note: "記得拿再入園券，高空俯瞰名古屋" }
+                ]
+            },
+            {
+                id: "day-7",
+                date: "12/23 (二)",
+                title: "常滑招財貓 & 歸途",
+                summary: "退房 ➔ 常滑 ➔ 機場 Aeon ➔ 飛機",
+                events: [
+                    { time: "10:00", title: "飯店退房", type: "hotel", note: "行李拉去機場或寄放" },
+                    { time: "10:40", title: "常滑市 (招財貓故鄉)", type: "sight", note: "彩繪招財貓步道散策" },
+                    { time: "16:00", title: "Aeon Mall Tokoname", type: "shopping", note: "機場旁最後衝刺，有巨大的招財貓" },
+                    { time: "20:50", title: "前往機場", type: "transport", note: "T1 航廈報到" },
+                    { time: "22:45", title: "起飛 MM723", type: "transport", note: "回家囉！預計 01:25 抵達台北" }
+                ]
+            }
+        ];
+
+        // Function to render itinerary
+        function renderItinerary() {
+            const container = document.getElementById('itinerary-container');
+            
+            itineraryData.forEach((day, index) => {
+                const dayEl = document.createElement('div');
+                dayEl.id = day.id;
+                dayEl.className = 'relative pl-8 md:pl-0 reveal';
+                
+                // Colors based on day index (alternating vibe)
+                const isEven = index % 2 === 0;
+                
+                let eventsHtml = day.events.map(event => {
+                    // Determine icon and color
+                    let icon = 'circle';
+                    let colorClass = 'bg-gray-200';
+                    let iconColor = 'text-gray-500';
+
+                    if(event.type === 'transport') { icon = 'train'; colorClass = 'bg-blue-100 text-blue-600'; iconColor='text-blue-500'; }
+                    if(event.type === 'food') { icon = 'utensils'; colorClass = 'bg-orange-100 text-orange-600'; iconColor='text-orange-500'; }
+                    if(event.type === 'sight') { icon = 'camera'; colorClass = 'bg-emerald-100 text-emerald-600'; iconColor='text-emerald-500'; }
+                    if(event.type === 'shopping') { icon = 'shopping-bag'; colorClass = 'bg-purple-100 text-purple-600'; iconColor='text-purple-500'; }
+                    if(event.type === 'hotel') { icon = 'bed'; colorClass = 'bg-indigo-100 text-indigo-600'; iconColor='text-indigo-500'; }
+                    if(event.type === 'event') { icon = 'star'; colorClass = 'bg-yellow-100 text-yellow-600'; iconColor='text-yellow-500'; }
+
+                    const highlightClass = event.highlight ? 'border-l-4 border-yellow-400 bg-yellow-50/50' : '';
+                    
+                    // Sub-items for shopping list
+                    let subItemsHtml = '';
+                    if(event.items) {
+                        subItemsHtml = `<div class="flex flex-wrap gap-2 mt-2">
+                            ${event.items.map(i => `<span class="text-xs bg-white/50 px-2 py-1 rounded border border-gray-200">${i}</span>`).join('')}
+                        </div>`;
+                    }
+
+                    return `
+                        <div class="relative pl-8 py-2 group">
+                            <div class="absolute left-0 top-4 w-6 h-6 rounded-full ${colorClass} flex items-center justify-center z-10 shadow-sm group-hover:scale-110 transition-transform">
+                                <i data-lucide="${icon}" class="w-3 h-3"></i>
+                            </div>
+                            <div class="absolute left-3 top-10 bottom-0 w-px bg-gray-200 -z-0 last:hidden"></div>
+
+                            <div class="glass-card rounded-xl p-4 ${highlightClass} relative overflow-hidden">
+                                <div class="flex justify-between items-start mb-1">
+                                    <span class="font-mono text-sm font-bold ${iconColor}">${event.time}</span>
+                                    ${event.location ? `<a href="https://www.google.com/maps/search/?api=1&query=${event.location}" target="_blank" class="text-xs text-gray-400 hover:text-blue-500 flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> MAP</a>` : ''}
+                                </div>
+                                <h4 class="font-bold text-gray-800 text-lg leading-tight">${event.title}</h4>
+                                ${event.note ? `<p class="text-sm text-gray-600 mt-1 font-light">${event.note}</p>` : ''}
+                                ${subItemsHtml}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                dayEl.innerHTML = `
+                    <div class="md:flex gap-8 items-start">
+                        <div class="md:w-1/4 md:sticky md:top-24 mb-6 md:mb-0 z-10">
+                            <div class="inline-block md:block bg-white/80 backdrop-blur shadow-lg rounded-2xl p-4 border border-white/50">
+                                <div class="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">Day ${index + 1}</div>
+                                <div class="text-2xl font-display font-bold text-gray-800">${day.date}</div>
+                                <div class="text-sm text-blue-600 font-medium mt-1">${day.title}</div>
+                                <p class="text-xs text-gray-400 mt-2 leading-relaxed hidden md:block">${day.summary}</p>
+                            </div>
+                        </div>
+
+                        <div class="md:w-3/4 space-y-2">
+                            ${eventsHtml}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(dayEl);
+            });
+            
+            // Re-init icons for new elements
+            lucide.createIcons();
+        }
+
+        renderItinerary();
+
+        // Scroll Reveal Logic
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    </script>
+</body>
+</html>
